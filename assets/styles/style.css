@@ -1,0 +1,18 @@
+.container {
+  width: 960px;
+  height: 960px;
+  border: 1px solid black;
+  margin: 2em auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.grid__square {
+  border: 1px solid darkgrey;
+  box-sizing: border-box;
+}
+
+.button__clear {
+  display: block;
+  margin: auto;
+}
