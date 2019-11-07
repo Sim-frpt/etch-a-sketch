@@ -23,15 +23,33 @@ const createGrid = squaresPerSides => {
 
 const changeSquareColor = () => {
   const target = this.event.target;
-  let red      = Math.floor(Math.random() * (255 - 0 + 1));
-  let green    = Math.floor(Math.random() * (255 - 0 + 1));
-  let blue     = Math.floor(Math.random() * (255 - 0 + 1));
-
+  let red      = Math.floor(Math.random() * 256);
+  let green    = Math.floor(Math.random() * 256);
+  let blue     = Math.floor(Math.random() * 256);
+  
+  // Only interact with the squares, not the container
   if (target.classList.contains("grid__square")) {
-    if (target.style.background !== '' && ! ("randomColor" in target.dataset)) {
+    if (target.style.background === '') {
+      target.style.background = `rgb(${red}, ${green}, ${blue})`;
       target.setAttribute("data-random-color", [red, green, blue]);
+      target.setAttribute("data-hover-count", 0);
+
+      return;
+    } 
+    if ("hoverCount" in target.dataset && target.dataset.hoverCount <= 10) {
+      target.dataset.hoverCount++;
+
+      currentColors = target.style.background.match(/\d+/g);
+      
+      darkenCoefficient = currentColors.map( color => Math.ceil(parseInt(color, 10) / 10));
+      newColors = currentColors.map( (color, i) => {
+        newColor = parseInt(color, 10) - darkenCoefficient[i];
+        newColor = newColor < 0 ? 0 : newColor; 
+        return newColor;
+      });
+      
+      target.style.background = `rgb(${newColors})`;
     }
-    target.style.background = `rgb(${red}, ${green}, ${blue})`;
   }
 }
 
@@ -67,7 +85,7 @@ const getUserInput = (text = '') => {
   // Checks for the input
   if (typeof userInput !== "number" || isNaN(userInput)) {
     getUserInput("Please enter a number");
-  } else if ( userInput <= 0 || userInput >= 100 ) {
+  } else if ( userInput <= 0 || userInput > 100 ) {
     getUserInput("Your number cannot be negative or bigger than 100");
   }
 
